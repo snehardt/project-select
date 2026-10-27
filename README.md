@@ -2,6 +2,8 @@
 
 A Django portfolio by Spencer Ehardt. A dark, text-first index introduces five projects; each has its own URL with development notes, technology, links, and an initially collapsed screenshot gallery. The selection-frame logo is also used as the favicon and footer mark.
 
+**Live website:** https://spencerehardt.pythonanywhere.com/
+
 ## Run locally (Windows PowerShell)
 
 ```powershell
@@ -72,7 +74,8 @@ The gallery and instruction disclosures use native HTML `<details>`. Search and 
 For step-by-step instructions tailored to this repository, see [HOSTING.md](HOSTING.md).
 Source repository: https://github.com/snehardt/project-select
 
-This app requires a Python-capable host; GitHub Pages cannot run Django. No public deployment has been configured.
+This app runs on PythonAnywhere at https://spencerehardt.pythonanywhere.com/.
+GitHub Pages cannot run Django. See HOSTING.md for the deployed configuration and update steps.
 
 For deployment, set `DJANGO_DEBUG=false`, a long random `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS` (comma-separated hostnames), and optionally `SITE_CONTACT_EMAIL`. Apply migrations and run `collectstatic`. WhiteNoise serves the collected CSS and images. Use a persistent disk for `db.sqlite3` (or configure a managed database before hosting on ephemeral storage). Run with an HTTPS reverse proxy and a production WSGI server, such as:
 

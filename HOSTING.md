@@ -5,6 +5,51 @@ Repository: https://github.com/snehardt/project-select
 The repository shares the source. PythonAnywhere runs Django and gives you a
 public website address. GitHub Pages cannot run this Django application.
 
+## Current deployment
+
+Deployed October 27, 2026:
+
+- Public URL: https://spencerehardt.pythonanywhere.com/
+- PythonAnywhere username: `spencerehardt`
+- Project: `/home/spencerehardt/project-select`
+- Python: 3.13; virtualenv: `/home/spencerehardt/.virtualenvs/project-select`
+- Static mapping: `/static/` to `/home/spencerehardt/project-select/staticfiles`
+- Host WSGI file: `/var/www/spencerehardt_pythonanywhere_com_wsgi.py`
+- The WSGI file sets `DJANGO_DEBUG=false`, the allowed hostname, and the settings
+  module. It generates a stable private key in `/home/spencerehardt/.project-select-secret`
+  with owner-only permissions and reads it on subsequent reloads. Keep that file
+  private and backed up; do not put it in Git. This deployment does not use `.env`.
+- Force HTTPS is enabled. The database is SQLite on the host's persistent storage.
+- An admin user has not been created by the deployment workflow. Create one only
+  if you want to edit project records through `/admin/`.
+
+**Free-site renewal:** log in monthly, open the Web tab, and click
+**Run until 1 month from today**. The initial expiry shown was November 27, 2026.
+Use the current expiry on the Web tab as the source of truth.
+
+### Update this deployed site
+
+Push local changes to GitHub, then run these commands in the PythonAnywhere Bash
+console. Wait for each command to finish before running the next:
+
+```bash
+workon project-select
+cd ~/project-select
+git pull --ff-only
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py collectstatic --noinput
+```
+
+Then click **Reload spencerehardt.pythonanywhere.com** on the Web tab. The install
+step is needed when dependencies change; migrate is needed when database models
+change; collectstatic is needed when assets or the Snake ZIP change. Admin content
+edits take effect when saved. `seed_projects` adds missing starter projects but
+preserves existing records, so it does not overwrite admin edits.
+
+The remaining guide describes setting up a **new** deployment using an `.env`
+file as an alternative to the current WSGI-managed private key.
+
 ## 1. Create your hosting account
 
 Sign up at https://www.pythonanywhere.com/ and open **Consoles > Bash**.
