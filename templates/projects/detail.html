@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ project.title }} — Project Select{% endblock %}
+{% block description %}{{ project.summary }}{% endblock %}
+{% block content %}
+<div class="detail-topline"><a class="back-link" href="{% url 'projects:index' %}"><span aria-hidden="true">←</span> Back to the index</a><span class="eyebrow">PROJECT {{ project.sort_order|stringformat:'02d' }}</span></div>
+<section class="detail-hero" aria-labelledby="project-title">
+  <div class="eyebrow">{{ project.get_category_display }} <span aria-hidden="true">/</span> {{ project.status }}</div>
+  <h1 id="project-title">{{ project.title }}<span class="muted">.</span></h1>
+  <p class="detail-summary">{{ project.summary }}</p>
+  <div class="project-actions">
+    {% if project.demo_url %}<a class="button button-primary" href="{{ project.demo_url }}" target="_blank" rel="noopener noreferrer">{{ project.demo_label }} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>{% endif %}
+    {% if download_asset %}<a class="button{% if not project.demo_url %} button-primary{% endif %}" href="{% static download_asset %}" download>Download for Windows <span aria-hidden="true">↓</span></a>{% elif project.download_url %}<a class="button{% if not project.demo_url %} button-primary{% endif %}" href="{{ project.download_url }}" target="_blank" rel="noopener noreferrer">Download to play <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>{% endif %}
+    {% if project.screenshots.all %}<a class="button" href="#screenshots" data-open-gallery>Screenshots <span aria-hidden="true">↓</span></a>{% endif %}
+    {% if project.source_url %}<a class="button" href="{{ project.source_url }}" target="_blank" rel="noopener noreferrer">View code <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>{% endif %}
+  </div>
+</section>
+<div class="detail-layout">
+  <aside class="detail-sidebar"><span class="eyebrow">UNDER THE HOOD</span><div class="technology-list">{% for technology in project.technology_list %}<span>{{ technology }}</span>{% endfor %}</div><span class="sidebar-note">A work in progress.<br>Here's where it stands.</span></aside>
+  <div class="detail-body">
+    <section class="progress-section" aria-labelledby="progress-title"><h2 id="progress-title">Where it's at</h2>
+      <table class="progress-table"><caption class="sr-only">Development progress for {{ project.title }}</caption><tbody>
+        <tr><th scope="row">Status</th><td><span class="status-pill"><span aria-hidden="true"></span>{{ project.status }}</span></td></tr>
+        <tr><th scope="row">Where it is</th><td><ul>{% for item in project.feature_list %}{% if item %}<li>{{ item }}</li>{% endif %}{% endfor %}</ul></td></tr>
+        <tr><th scope="row">Future progress</th><td><ul>{% for item in project.next_list %}{% if item %}<li>{{ item }}</li>{% endif %}{% endfor %}</ul></td></tr>
+        {% if project.contribution %}<tr><th scope="row">My role</th><td>{{ project.contribution }}</td></tr>{% endif %}
+      </tbody></table>
+    </section>
+    {% if download_asset %}
+    <details class="disclosure"><summary><span class="disclosure-title">How to play on Windows</span><span class="disclosure-plus" aria-hidden="true">+</span></summary><div class="disclosure-content"><p>Download the ZIP, extract the entire folder, and open {{ project.title }}.exe inside it. Keep the _internal folder beside the game. No Python installation is needed.</p>{% if project.slug == 'snake' %}<p>Click Start and use the arrow keys to move. Open Settings to change the board size or speed. Press M to mute the music and Escape to close the game.</p>{% endif %}</div></details>
+    {% elif project.download_url and not project.demo_url and project.run_instructions %}
+    <details class="disclosure"><summary><span class="disclosure-title">Download setup (Python required)</span><span class="disclosure-plus" aria-hidden="true">+</span></summary><div class="disclosure-content"><p>Download and extract the source ZIP, then follow these steps to play.</p><pre>{{ project.run_instructions }}</pre></div></details>
+    {% endif %}
+    {% if project.screenshots.all %}
+    <details class="gallery disclosure" id="screenshots"><summary><span><span class="eyebrow">A CLOSER LOOK</span><span class="disclosure-title">Screenshots <span class="count">{{ project.screenshots.all|length|stringformat:'02d' }}</span></span></span><span class="disclosure-plus" aria-hidden="true">+</span></summary>
+      <div class="gallery-content">{% for screenshot in project.screenshots.all %}<figure><a href="{% static screenshot.asset %}" target="_blank" rel="noopener noreferrer" aria-label="Open full-size image: {{ screenshot.caption }} (opens in a new tab)"><img src="{% static screenshot.asset %}" alt="{{ screenshot.caption }}" loading="lazy" width="1280" height="800"></a><figcaption><span>{{ forloop.counter|stringformat:'02d' }}</span>{{ screenshot.caption }}<span class="figure-arrow" aria-hidden="true">↗</span></figcaption></figure>{% endfor %}</div>
+    </details>
+    {% endif %}
+  </div>
+</div>
+{% if next_project %}<a class="next-project" href="{{ next_project.get_absolute_url }}"><div><span class="eyebrow">NEXT IN THE COLLECTION</span><span class="next-title">{{ next_project.title }}</span></div><span aria-hidden="true">↗</span></a>{% endif %}
+{% endblock %}

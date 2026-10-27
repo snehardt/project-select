@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Project not found — Project Select{% endblock %}
+{% block content %}<section class="empty-state error-page"><span class="eyebrow">404 / MISSING IN ACTION</span><h1>Nothing in this slot<span class="muted">.</span></h1><p>This project may have moved, or the link may be incomplete.</p><a class="button button-primary" href="{% url 'projects:index' %}">Back to the collection <span aria-hidden="true">↗</span></a></section>{% endblock %}

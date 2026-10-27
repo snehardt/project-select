@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block active %}aria-current="page"{% endblock %}
+{% block content %}
+<section class="intro" aria-labelledby="page-title">
+  <h1 id="page-title" class="intro-title"><img src="{% static 'projects/brand/icon.svg' %}" alt="" width="80" height="80"><span>Project Select</span></h1>
+  <div class="intro-bottom">
+    <p>I'm Spencer Ehardt, a computer science student nearing graduation.<br class="desktop-break"> These are the games, web apps, and experiments I'm building along the way.</p>
+    <span class="intro-note">A collection in progress<span aria-hidden="true">↙</span></span>
+  </div>
+</section>
+<section class="collection" aria-labelledby="collection-title">
+  <div class="collection-toolbar">
+    <h2 id="collection-title">ALL PROJECTS <span class="count">{{ total|stringformat:'02d' }} PROJECT{{ total|pluralize:'S' }}</span></h2>
+    <form class="search-form" method="get" action="{% url 'projects:index' %}" role="search">
+      <label class="sr-only" for="id_q">Search projects</label>
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></svg>
+      {{ form.q }}
+      <button type="submit" aria-label="Search projects"><span aria-hidden="true">↵</span></button>
+    </form>
+  </div>
+  <div id="search-feedback" {% if form.errors %}role="alert"{% else %}role="status"{% endif %}>
+    {% if form.q.errors %}<div class="search-feedback error">{{ form.q.errors }}<a href="{% url 'projects:index' %}">Reset search ↗</a></div>
+    {% elif query %}<div class="search-feedback">{{ projects|length }} result{{ projects|length|pluralize }} for “{{ query }}”<a href="{% url 'projects:index' %}">Clear search <span aria-hidden="true">×</span></a></div>{% endif %}
+  </div>
+  <div class="project-list">
+    {% for project in projects %}
+    <article class="project-row">
+      <a class="project-link" href="{{ project.get_absolute_url }}">
+        <span class="project-number" aria-hidden="true">{{ project.sort_order|stringformat:'02d' }}</span>
+        <div class="project-copy"><h3>{{ project.title }}</h3><p>{{ project.summary }}</p></div>
+        <span class="project-category">{{ project.get_category_display }}</span>
+        <span class="project-arrow" aria-hidden="true">↗</span>
+        <span class="sr-only">View project details</span>
+      </a>
+    </article>
+    {% empty %}
+    <div class="empty-state"><span class="eyebrow">NOTHING SELECTED</span><h3>{% if form.errors %}Let's try a shorter search.{% elif query %}No projects found.{% else %}The collection is taking shape.{% endif %}</h3><p>{% if query %}Try a project name or technology, like Python or JavaScript.{% elif not form.errors %}New projects will appear here as they're added.{% endif %}</p>{% if query %}<a class="button" href="{% url 'projects:index' %}">View all projects <span aria-hidden="true">↗</span></a>{% endif %}</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

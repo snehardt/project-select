@@ -1,0 +1,36 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101010">
+  <meta name="description" content="{% block description %}Games, web applications, and things in progress. A collection of projects by Spencer Ehardt.{% endblock %}">
+  <title>{% block title %}Project Select — Spencer Ehardt{% endblock %}</title>
+  <link rel="icon" href="{% static 'projects/brand/icon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'projects/site.css' %}?v=20261026-3">
+  <script src="{% static 'projects/site.js' %}" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="site-shell">
+    <header class="site-header">
+      {% if request.resolver_match.view_name != 'projects:index' %}
+      <a class="brand" href="{% url 'projects:index' %}" aria-label="Project Select home">
+        <img src="{% static 'projects/brand/icon.svg' %}" alt="" width="34" height="34">
+        <span>PROJECT SELECT<span class="brand-period">.</span></span>
+      </a>
+      {% endif %}
+      <nav aria-label="Main navigation">
+        <a class="nav-projects" href="{% url 'projects:index' %}" {% block active %}{% endblock %}>Projects <span aria-hidden="true">↗</span></a>
+        <a href="https://github.com/snehardt" target="_blank" rel="noopener noreferrer">GitHub <span class="external" aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+      </nav>
+    </header>
+    <main id="main">{% block content %}{% endblock %}</main>
+    <footer class="site-footer">
+      <div class="footer-signature"><img src="{% static 'projects/brand/icon.svg' %}" alt="" width="24" height="24"><span>Made by Spencer Ehardt.</span></div>
+      <div class="footer-links">{% if contact_email %}<a href="mailto:{{ contact_email }}">Email me <span aria-hidden="true">↗</span></a>{% endif %}<a href="https://github.com/snehardt" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a><span class="copyright">© {% now 'Y' %}</span></div>
+    </footer>
+  </div>
+</body>
+</html>
